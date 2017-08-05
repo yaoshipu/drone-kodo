@@ -1,0 +1,9 @@
+clone:
+  drone-kodo.git:
+    image: index.qiniu.com/spock/git-plugin:cs-proxy
+
+pipeline:
+  build:
+    image: index.qiniu.com/spock/golang:1.7
+    commands:
+      - make build
