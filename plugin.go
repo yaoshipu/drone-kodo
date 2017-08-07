@@ -18,6 +18,7 @@ type Plugin struct {
 	Key      string
 	Source   string
 	Delete   bool
+	Zone     string
 }
 
 type KodoRet struct {
@@ -44,13 +45,8 @@ func (p *Plugin) Exec() error {
 	mac := qbox.NewMac(p.AK, p.SK)
 	upToken := putPolicy.UploadToken(mac)
 
-	zone, err := storage.GetZone(p.AK, p.Bucket)
-	if err != nil {
-		return fmt.Errorf("[GetZone] error: %v", err)
-	}
-
 	cfg := storage.Config{
-		Zone:          zone,
+		Zone:          getZone(p.Zone),
 		UseHTTPS:      true,
 		UseCdnDomains: true,
 	}
@@ -70,4 +66,19 @@ func (p *Plugin) Exec() error {
 
 	fmt.Printf("ret: %+v\n", ret)
 	return nil
+}
+
+func getZone(zoneId string) *storage.Zone {
+	switch zoneId {
+	case "z0":
+		return &storage.ZoneHuadong
+	case "z1":
+		return &storage.ZoneHuabei
+	case "z2":
+		return &storage.ZoneHuanan
+	case "na0":
+		return &storage.ZoneBeimei
+	default:
+		return &storage.ZoneHuadong
+	}
 }

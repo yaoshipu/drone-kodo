@@ -27,16 +27,17 @@ func main() {
 		cli.StringFlag{
 			Name:   "access-key",
 			Usage:  "KODO access key",
-			EnvVar: "PLUGIN_ACCESS_KEY",
+			EnvVar: "PLUGIN_ACCESS_KEY,BUCKET_USER",
 		},
 		cli.StringFlag{
 			Name:   "secret-key",
 			Usage:  "KODO secret key",
-			EnvVar: "PLUGIN_SECRET_KEY",
+			EnvVar: "PLUGIN_SECRET_KEY,BUCKET_PWD",
 		},
 		cli.StringFlag{
 			Name:   "bucket",
 			Usage:  "KODO bucket",
+			Value:  "release-candidates",
 			EnvVar: "PLUGIN_BUCKET",
 		},
 		cli.StringFlag{
@@ -55,6 +56,17 @@ func main() {
 			Name:   "delete",
 			Usage:  "delete existing file",
 			EnvVar: "PLUGIN_DELETE",
+		},
+		cli.StringFlag{
+			Name:   "zone",
+			Usage:  "kodo zone",
+			Value:  "z0",
+			EnvVar: "PLUGIN_ZONE",
+		},
+		cli.BoolFlag{
+			Name:   "debug",
+			Usage:  "show debug info",
+			EnvVar: "PLUGIN_DEBUG",
 		},
 		cli.StringFlag{
 			Name:  "env-file",
@@ -80,6 +92,15 @@ func run(c *cli.Context) error {
 		Key:      c.String("key"),
 		Source:   c.String("source"),
 		Delete:   c.Bool("delete"),
+		Zone:     c.String("zone"),
+	}
+
+	// 显示环境变量和Plugin详细信息
+	if c.Bool("debug") {
+		logrus.Infof("plugin: %+v", plugin)
+		for _, e := range os.Environ() {
+			logrus.Info(e)
+		}
 	}
 
 	return plugin.Exec()

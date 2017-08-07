@@ -27,3 +27,4 @@ _testmain.go
 
 coverage.out
 drone-kodo
+.DS_store
